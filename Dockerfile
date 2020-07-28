@@ -100,6 +100,7 @@ RUN \
     --quiet \
     "${GRAYLOG_USER}" && \
   chown --recursive "${GRAYLOG_USER}":"${GRAYLOG_GROUP}" ${GRAYLOG_HOME} && \
+  chmod -R g=u ${GRAYLOG_HOME} && \
   setcap 'cap_net_bind_service=+ep' "${JAVA_HOME}/bin/java" && \
   apt-get remove --assume-yes --purge \
     apt-utils > /dev/null && \
