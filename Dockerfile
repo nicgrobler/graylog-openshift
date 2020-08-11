@@ -34,6 +34,15 @@ RUN \
 RUN \
   sha256sum --check "graylog-${GRAYLOG_VERSION}.tgz.sha256.txt"
 
+# install our plugins here
+RUN \
+  curl \
+    --silent \
+    --location \
+    --retry 3 \
+    --output "/tmp/graylog-plugin-splunk-0.5.0-rc.1.jar" \
+    "https://github.com/graylog-labs/graylog-plugin-splunk/releases/download/0.5.0-rc.1/graylog-plugin-splunk-0.5.0-rc.1.jar"
+
 RUN \
   mkdir /opt/graylog && \
   tar --extract --gzip --file "/tmp/graylog-${GRAYLOG_VERSION}.tgz" --strip-components=1 --directory /opt/graylog
@@ -65,6 +74,7 @@ ARG GRAYLOG_GROUP=root
 ARG GRAYLOG_GID=0
 
 COPY --from=graylog-downloader /opt/graylog ${GRAYLOG_HOME}
+COPY --from=graylog-downloader /tmp/graylog-plugin-splunk-0.5.0-rc.1.jar ${GRAYLOG_HOME}/plugin/graylog-plugin-splunk-0.5.0-rc.1.jar
 COPY config ${GRAYLOG_HOME}/data/config
 
 WORKDIR ${GRAYLOG_HOME}
