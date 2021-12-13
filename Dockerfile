@@ -44,6 +44,14 @@ RUN \
     "https://github.com/graylog-labs/graylog-plugin-splunk/releases/download/0.5.0-rc.1/graylog-plugin-splunk-0.5.0-rc.1.jar"
 
 RUN \
+  curl \
+    --silent \
+    --location \
+    --retry 3 \
+    --output "/tmp/graylog-plugin-logging-alert-2.2.0.jar" \
+    "https://github.com/airbus-cyber/graylog-plugin-logging-alert/releases/download/2.2.0/graylog-plugin-logging-alert-2.2.0.jar"
+
+RUN \
   mkdir /opt/graylog && \
   tar --extract --gzip --file "/tmp/graylog-${GRAYLOG_VERSION}.tgz" --strip-components=1 --directory /opt/graylog
 
@@ -75,6 +83,8 @@ ARG GRAYLOG_GID=0
 
 COPY --from=graylog-downloader /opt/graylog ${GRAYLOG_HOME}
 COPY --from=graylog-downloader /tmp/graylog-plugin-splunk-0.5.0-rc.1.jar ${GRAYLOG_HOME}/plugin/graylog-plugin-splunk-0.5.0-rc.1.jar
+COPY --from=graylog-downloader /tmp/graylog-plugin-logging-alert-2.2.0.jar ${GRAYLOG_HOME}/plugin/graylog-plugin-logging-alert-2.2.0.jar
+
 COPY config ${GRAYLOG_HOME}/data/config
 
 WORKDIR ${GRAYLOG_HOME}
